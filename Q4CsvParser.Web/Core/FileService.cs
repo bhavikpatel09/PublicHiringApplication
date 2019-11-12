@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Web;
 using Q4CsvParser.Contracts;
 
@@ -22,7 +23,11 @@ namespace Q4CsvParser.Web.Core
         public string StoreFile(HttpPostedFileBase file)
         {
             //TODO fill in your logic here
-            throw new NotImplementedException();
+            string directoryPath = HttpContext.Current.Server.MapPath("~/App_Data/uploads/");
+            string fullPath = Path.Combine(directoryPath, file.FileName);
+            DirectoryInfo dir = Directory.CreateDirectory(directoryPath);
+            file.SaveAs(fullPath);
+            return fullPath;
         }
 
         /// <summary>
@@ -34,7 +39,8 @@ namespace Q4CsvParser.Web.Core
         public string ReadFile(string filePath)
         {
             //TODO fill in your logic here
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return System.IO.File.ReadAllText(filePath);
         }
     }
 }
