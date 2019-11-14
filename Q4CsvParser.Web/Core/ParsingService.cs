@@ -19,7 +19,6 @@ namespace Q4CsvParser.Web.Core
         public CsvTable ParseCsv(string fileContent, bool containsHeader)
         {
             CsvTable csvTable = new CsvTable();
-            //TODO fill in your logic here
             fileContent = fileContent.TrimEnd();
             string[] rowSeparators = new string[] { "\r\n" , "\n","\r" };
             string[] rows = fileContent.Split(rowSeparators, StringSplitOptions.None);
@@ -27,29 +26,13 @@ namespace Q4CsvParser.Web.Core
             {
                 if (containsHeader)
                 {
-                    CsvRow headerRow = new CsvRow
-                    {
-                        Columns = new System.Collections.Generic.List<CsvColumn>()
-                    };
-                    foreach (string value in rows[0].Split(','))
-                    {
-                        headerRow.Columns.Add(new CsvColumn(value));
-                    }
+                    CsvRow headerRow = GenerateRow(rows[0]);
                     csvTable.HeaderRow = headerRow;
-                    //other rows
                     if (rows.Length > 1)
                     {
                         for (int i = 1; i < rows.Length; i++)
                         {
-                            var rowValue = rows[i].TrimEnd();
-                            CsvRow csvRow = new CsvRow
-                            {
-                                Columns = new System.Collections.Generic.List<CsvColumn>()
-                            };
-                            foreach (string column in rowValue.Split(','))
-                            {
-                                csvRow.Columns.Add(new CsvColumn(column));
-                            }
+                            CsvRow csvRow = GenerateRow(rows[i]);
                             csvTable.Rows.Add(csvRow);
                         }
                     }
@@ -58,20 +41,27 @@ namespace Q4CsvParser.Web.Core
                 {
                     foreach (string row in rows)
                     {
-                        var rowValue = row.TrimEnd();
-                        CsvRow csvRow = new CsvRow
-                        {
-                            Columns = new System.Collections.Generic.List<CsvColumn>()
-                        };
-                        foreach (string column in rowValue.Split(','))
-                        {
-                            csvRow.Columns.Add(new CsvColumn(column));
-                        }
+                        CsvRow csvRow = GenerateRow(row);
                         csvTable.Rows.Add(csvRow);
                     }
                 }
             }
             return csvTable;
+        }
+
+        private CsvRow GenerateRow(string rowValue)
+        {
+            rowValue = rowValue.TrimEnd();
+            CsvRow csvRow = new CsvRow
+            {
+                Columns = new System.Collections.Generic.List<CsvColumn>()
+            };
+            foreach (string column in rowValue.Split(','))
+            {
+                csvRow.Columns.Add(new CsvColumn(column));
+            }
+
+            return csvRow;
         }
     }
 }
